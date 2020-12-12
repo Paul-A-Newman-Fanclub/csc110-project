@@ -1,0 +1,14 @@
+# CSC110 Fall 2020: Python libraries we'll be using this semester.
+
+# Testing and code checking
+hypothesis
+pytest
+python-ta
+
+# Graphics and data visualization
+plotly
+pygame==2.0.0
+sklearn==0.0
+matplotlib
+numpy
+pandas
