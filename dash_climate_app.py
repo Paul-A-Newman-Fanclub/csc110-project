@@ -29,25 +29,26 @@ years_co2 = {year: str(year) for year in range(1990, 2019)}
 years_gdp = {year: str(year) for year in range(1990, 2016)}
 
 # Setting up the web app layout
-# Optional: style={'backgroundColor': '#39424d'} - changes background color of main div
-map_app.layout = html.Div(id='main', style={'font-family': 'Verdana'}, children=[
+map_app.layout = html.Div(id='main', style={'font-family': 'Helvetica',
+                                            'backgroundColor': '#2E3440',
+                                            'padding-top': '25px',
+                                            'padding-bottom': '25px',
+                                            'padding-left': '75px',
+                                            'padding-right': '75px'}, children=[
 
     # Page Title
     html.H1(children="CSC110 Final Project: Climate Change Dashboard",
-            style={'text-align': 'center', 'font-family': 'Verdana'}),
+            style={'text-align': 'center', 'font-family': 'Helvetica', 'color': '#FFFFFF'}),
 
     # Adding a space between title and subsequent heading.
     html.Br(),
 
     # Sub-heading
     html.H2(children='CO2 Emissions across the World (by year)',
-            style={'font-family': ''}),
+            style={'font-family': 'Helvetica', 'color': '#FFFFFF'}),
 
     # Creating a Graph Dash Core Component to hold CO2 map in this section in the main div.
     dcc.Graph(id='co2_emission_map'),
-
-    # Adding a space between graph and slider.
-    html.Br(),
 
     # Creating a Graph Dash Core Component to allow user to change years on map.
     dcc.Slider(id='choose_yr_co2',
@@ -55,7 +56,8 @@ map_app.layout = html.Div(id='main', style={'font-family': 'Verdana'}, children=
                max=2018,
                marks=years_co2,
                value=1990,
-               included=False
+               included=False,
+               updatemode='drag'
                ),
 
     # Adding a space between slider and next graph
@@ -63,13 +65,10 @@ map_app.layout = html.Div(id='main', style={'font-family': 'Verdana'}, children=
 
     # Sub-heading.
     html.H2(children='GDP in US$ (by year)',
-            style={'font': 'Serif'}),
+            style={'font': 'Helvetica', 'color': '#FFFFFF'}),
 
     # Creating another Graph core component to hold the gdp map.
     dcc.Graph(id='gdp_map'),
-
-    # Adding a space between the graph and the
-    html.Br(),
 
     # Creating another slider exclusive to the gdp map.
     dcc.Slider(id='choose_yr_gdp',
@@ -77,7 +76,8 @@ map_app.layout = html.Div(id='main', style={'font-family': 'Verdana'}, children=
                max=2016,
                marks=years_gdp,
                value=1990,
-               included=False
+               included=False,
+               updatemode='drag'
                ),
 ])
 
@@ -108,41 +108,49 @@ def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
     fig_co2 = px.choropleth(
         data_frame=df_co2,
         scope='world',
+        projection='kavrayskiy7',
         locationmode='country names',
         locations='country',
         color_continuous_scale=px.colors.sequential.Sunset,
         color='co2',
         labels={'co2': 'CO2 Emissions (million tonnes)'},
         hover_data=['country', 'co2'],
+        height=600
     )
 
     # Optional stylistic changes for co2 map.
-    # fig_co2.update_layout(
-    #     plot_bgcolor='#39424d',
-    #     paper_bgcolor='#39424d',
-    #     font_color="White",
-    #     font_family="Verdana"
-    # )
+    fig_co2.update_layout(
+        geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='#2E3440', subunitcolor='rgba(0,0,0,0)',
+                 showframe=False),
+        plot_bgcolor='#2E3440',
+        paper_bgcolor='#2E3440',
+        font_color="White",
+        font_family="Helvetica",
+    )
 
     # Creating the gdp choropleth map.
     fig_gdp = px.choropleth(
         data_frame=df_gdp,
         scope='world',
+        projection='kavrayskiy7',
         locationmode='country names',
         locations='country',
         color_continuous_scale=px.colors.sequential.Blugrn,
         color='gdp',
         labels={'gdp': 'GDP (US$)'},
         hover_data=['country', 'gdp'],
+        height=600
     )
 
     # Optional stylistic changes for gdp map.
-    # fig_gdp.update_layout(
-    #     plot_bgcolor='#39424d',
-    #     paper_bgcolor='#39424d',
-    #     font_color="White",
-    #     font_family="Verdana"
-    # )
+    fig_gdp.update_layout(
+        geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='#2E3440', subunitcolor='rgba(0,0,0,0)',
+                 showframe=False),
+        plot_bgcolor='#2E3440',
+        paper_bgcolor='#2E3440',
+        font_color="White",
+        font_family="Helvetica",
+    )
 
     # Return fig objects, to be passed into both dcc.Graph components.
     return fig_co2, fig_gdp
