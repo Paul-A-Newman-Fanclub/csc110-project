@@ -1,0 +1,12 @@
+# final project requirements
+
+# Testing and code checking
+python-ta
+
+# data analysis and data visualization
+plotly
+sklearn==0.0
+matplotlib
+numpy
+pandas
+graphviz
