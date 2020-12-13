@@ -8,7 +8,7 @@ import plotly.express as px
 
 
 # load the data, then isolate variables of interest, remove observations with missing values
-dataset = pandas.read_csv('data/owid-co2-data.csv', sep=',')
+dataset = pandas.read_csv('owid-co2-data.csv', sep=',')
 dataset = dataset[['gdp', 'co2', 'consumption_co2']]
 dataset = dataset.dropna()
 
