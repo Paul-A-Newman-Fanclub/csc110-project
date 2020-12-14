@@ -59,18 +59,27 @@ print(f'Linear Model: gdp = {intercept} + {b_1} * co2_emissions + {b_2} * co2_co
 print(f'Accuracy: {rmse} USD\n')
 
 # Plot the model in 3D space
+dataset_train = pandas.DataFrame()
+dataset_train.insert(0, 'Co2 Emissions (Millions of Tonnes)', co2_train[:, 0])
+dataset_train.insert(1, 'Co2 Consumption (Millions of Tonnes)', co2_train[:, 1])
+dataset_train.insert(2, 'GDP (USD)', gdp_train)
+
 x1 = np.linspace(0, 10000, 100).reshape(100, 1)
 x2 = np.linspace(0, 10000, 100).reshape(100, 1)
 points = np.hstack((x1, x2))
 x3 = co2_model.predict(points)
 
 df = pandas.DataFrame()
-df.insert(loc=0, column='Co2 Emissions (Millions of Tonnes)', value=x1.reshape(100,))
-df.insert(loc=1, column='Co2 Consumption (Millions of Tonnes)', value=x2.reshape(100,))
+df.insert(loc=0, column='Co2 Emissions (Millions of Tonnes)', value=x1.reshape(100, ))
+df.insert(loc=1, column='Co2 Consumption (Millions of Tonnes)', value=x2.reshape(100, ))
 df.insert(loc=2, column='GDP (USD)', value=list(x3))
-fig = px.line_3d(df, x='Co2 Emissions (Millions of Tonnes)',
-                 y='Co2 Consumption (Millions of Tonnes)', z="GDP (USD)",
-                 title="Linear Model of Co2 Emissions, Co2 Consumption, and GDP")
+fig = px.scatter_3d(dataset_train, x='Co2 Emissions (Millions of Tonnes)',
+                    y='Co2 Consumption (Millions of Tonnes)', z="GDP (USD)",
+                    title="Linear Model of Co2 Emissions, Co2 Consumption, and GDP")
+
+fig.add_traces([go.Scatter3d(x=df['Co2 Emissions (Millions of Tonnes)'],
+                             y=df['Co2 Consumption (Millions of Tonnes)'],
+                             z=df['GDP (USD)'], mode='lines')])
 fig.show()
 
 # MODEL 2
