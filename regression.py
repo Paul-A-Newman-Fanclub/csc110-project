@@ -69,7 +69,7 @@ def regression1_text_info(co2: np.ndarray, co2_t: np.ndarray, gdp: np.ndarray,
     rmse = metrics.mean_squared_error(y_true=gdp_t, y_pred=predictions, squared=False)
 
     # Relevant text output
-    print('Model 1: Co2 Emissions and Co2 Consumption')
+    print('\nModel 1: Co2 Emissions and Co2 Consumption')
     print("Coefficient of Determination (r^2):", l_reg.score(co2, gdp))
     print("Coefficient of Correlation(r): ", math.sqrt(l_reg.score(co2, gdp)))
     b_1, b_2 = l_reg.coef_
@@ -151,7 +151,7 @@ def regression2_text_info(ghg: np.ndarray, ghg_t: np.ndarray,
     intercept = l_reg.intercept_
     print(f'linear model: gdp = {intercept} + {b_1} * co2 + {b_2} * consumption_co2'
           f' + {b_3} * methane + {b_4} * nitrous_oxide')
-    print(f'Accuracy: {rmse} USD')
+    print(f'Accuracy: {rmse} USD\n')
 
 
 if __name__ == '__main__':
