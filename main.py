@@ -1,7 +1,6 @@
 """
 CSC110 Final Project: main.py file (see instructions in writeup for details)
 """
-import dash_climate_app
-import regression
 
-execfile('dash_climate_app.py')
+exec(open('regression.py').read())
+exec(open('dash_climate_app.py').read())
