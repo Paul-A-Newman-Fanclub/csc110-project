@@ -113,7 +113,7 @@ print(f'Accuracy: {rmse} USD')
 def gdp_predictor(co2: float, co2_consumption: float, meth: float, nitrous: float, model: int) -> float:
     """
     Using one of two the models trained in this module, returns prediction of the gdp of a given country
-    based on the co2 emissions, co2 consumption, methane emissions, and nitrous emissions.
+    based on the co2 emissions, co2 consumption, methane emissions, and nitrous emissions in millions of tonnes.
     The parameter model, specifies which model to use to make prediction. A value of 1 corresponds
     to the first module and a value of two corresponds to the second.
 
