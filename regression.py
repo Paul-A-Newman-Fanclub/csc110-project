@@ -1,4 +1,6 @@
-# import necessary modules
+"""
+Regression Analysis Cs110 final project
+"""
 from sklearn import linear_model, metrics
 from sklearn.model_selection import train_test_split
 import numpy as np
