@@ -66,6 +66,23 @@ print(f'linear model: gdp = {intercept} + {b_1} * co2_emissions + {b_2} * co2_co
 print(f'Accuracy: {rmse} USD\n')
 
 
+# Plot the model in 3d space
+x1 = np.linspace(0, 10000, 100).reshape(100, 1)
+x2 = np.linspace(0, 10000, 100).reshape(100, 1)
+points = np.hstack((x1, x2))
+x3 = co2_model.predict(points)
+
+df = pandas.DataFrame()
+df.insert(loc=0, column='Co2 Emissions (Millions of Tonnes)', value=x1.reshape(100,))
+df.insert(loc=1, column='Co2 Consumption (Millions of Tonnes)', value=x2.reshape(100,))
+df.insert(loc=2, column='GDP (USD)', value=list(x3))
+fig = px.line_3d(df, x='Co2 Emissions (Millions of Tonnes)',
+                 y='Co2 Consumption (Millions of Tonnes)', z="GDP (USD)",
+                 title="Linear Model of Co2 Emissions, Co2 Consumption, and GDP")
+fig.show()
+
+
+# Model 2
 # load the data, then isolate variables of interest, remove observations with missing values
 dat = pandas.read_csv('owid-co2-data.csv', sep=',')
 dat = dat[['gdp', 'co2', 'consumption_co2', 'methane', 'nitrous_oxide']]
@@ -109,23 +126,3 @@ intercept = l_reg.intercept_
 print(f'linear model: gdp = {intercept} + {b_1} * co2 + {b_2} * consumption_co2'
       f' + {b_3} * methane + {b_4} * nitrous_oxide')
 print(f'Accuracy: {rmse} USD')
-
-
-# Interactive Function that predicts gdp
-def gdp_predictor(co2: float, co2_consumption: float, meth: float, nitrous: float, model: int) -> float:
-    """
-    ***Extra***
-    Using one of two the models trained in this module, returns prediction of the gdp of a given country
-    based on the co2 emissions, co2 consumption, methane emissions, and nitrous emissions in millions of tonnes.
-    The parameter model, specifies which model to use to make prediction. A value of 1 corresponds
-    to the first module and a value of two corresponds to the second.
-
-    Preconditions:
-     - model == 1 or model == 2
-    """
-    if model == 1:
-        return 62758394187.130005 - 2714676506.8076687 * co2 + 4921820701.91739 * co2_consumption
-    else:
-        return 39526250426.829346 - 3104942924.878715 * co2 + 5192264291.57594 * co2_consumption + 198442893.4650092\
-               * meth + 1877327020.449066 * nitrous
-
