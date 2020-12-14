@@ -1,10 +1,11 @@
-# final project requirements
+# CSC110 Final Project Requirements
 
-# data analysis and data visualization
-plotly
-sklearn==0.0
-matplotlib
-numpy
-pandas
-graphviz
-dash
+pandas~=1.1.5
+
+dash~=1.18.1
+
+scikit-learn~=0.23.2
+
+# Earlier versions of Numpy may cause issues with Windows 10 version 2004
+# This pre-release version is recommended
+numpy~=1.20.0rc1
