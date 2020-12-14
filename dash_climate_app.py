@@ -1,5 +1,15 @@
 """
-CSC110 Final Project: CO2 and GDP Heatmap Visualizations
+CSC110 Climate Change Final Project
+
+General Information
+------------------------------------------------------------------------------
+This file was created for the purpose of investigating trends notable trends
+in Climate data available online for the CSC110 Final Project.
+
+Copyright Information
+------------------------------------------------------------------------------
+This file is Copyright of Tobey Brizuela, Daniel Lazaro, Matthew Parvaneh, and
+Michael Umeh.
 """
 import pandas as pd
 import plotly.express as px
@@ -12,99 +22,39 @@ from dash.dependencies import Input, Output
 
 from typing import Tuple
 
-
-# Creating the Dash App for our map
+# Creating the Dash App for our map.
 map_app = dash.Dash(__name__)
 
-# Reading in the csv file using pandas
-df = pd.read_csv('owid-co2-data.csv')
 
-# Importing and tidying/preprocessing our climate data
-df2 = df[df['iso_code'].notnull()]
-df2 = df2[df2['iso_code'] != "OWID_WRL"]
-df2 = df2[['country', 'year', 'co2', 'gdp']]
-
-# Establishing the years to be visualized in both maps
-years_co2 = {year: str(year) for year in range(1990, 2019)}
-years_gdp = {year: str(year) for year in range(1990, 2016)}
-
-# Setting up the web app layout
-map_app.layout = html.Div(id='main', style={'font-family': 'Helvetica',
-                                            'backgroundColor': '#2E3440',
-                                            'padding-top': '25px',
-                                            'padding-bottom': '25px',
-                                            'padding-left': '75px',
-                                            'padding-right': '75px'}, children=[
-
-    # Page Title
-    html.H1(children="CSC110 Final Project: Climate Change Dashboard",
-            style={'text-align': 'center', 'font-family': 'Helvetica', 'color': '#FFFFFF'}),
-
-    # Adding a space between title and subsequent heading
-    html.Br(),
-
-    # Sub-heading
-    html.H2(children='CO2 Emissions across the World (by year)',
-            style={'font-family': 'Helvetica', 'color': '#FFFFFF'}),
-
-    # Creating a Graph Dash Core Component to hold CO2 map in this section in the main div
-    dcc.Graph(id='co2_emission_map'),
-
-    # Creating a Graph Dash Core Component to allow user to change years on map
-    dcc.Slider(id='choose_yr_co2',
-               min=1990,
-               max=2018,
-               marks=years_co2,
-               value=1990,
-               included=False,
-               updatemode='drag'
-               ),
-
-    # Adding a space between slider and next graph
-    html.Br(),
-
-    # Sub-heading
-    html.H2(children='GDP in US$ (by year)',
-            style={'font': 'Helvetica', 'color': '#FFFFFF'}),
-
-    # Creating another Graph core component to hold the gdp map
-    dcc.Graph(id='gdp_map'),
-
-    # Creating another slider exclusive to the gdp map
-    dcc.Slider(id='choose_yr_gdp',
-               min=1990,
-               max=2016,
-               marks=years_gdp,
-               value=1990,
-               included=False,
-               updatemode='drag'
-               ),
-])
-
-
-# Using Dash Callback decorator to account for real-time interactions
+# Using Dash Callback decorator to account for real-time interactions.
 @map_app.callback(
-    # Establishing where the two outputs of this callback function go
+    # Establishing where the two outputs of this callback function go.
     [Output(component_id='co2_emission_map', component_property='figure'),
      Output(component_id='gdp_map', component_property='figure')],
-    # Establishing where the inputs for this callback function come from
+    # Establishing where the inputs for this callback function come from.
     [Input(component_id='choose_yr_co2', component_property='value'),
      Input(component_id='choose_yr_gdp', component_property='value')]
 )
 def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
     """
-    Dash Callback Function. Takes in the currently selected 'year' marks on
-    the sliders of both the co2 and gdp maps as argument, outputting the corresponding
-    map for each year.
+    Dash Callback Function.
+
+    Takes in the currently selected 'year' marks on the sliders of both the co2
+    and gdp maps as argument, outputting the corresponding map for each year.
+
+    Preconditions:
+      - A tuple of two plotly Figure objects is returned to the main dash app,
+      which both get displayed in the dcc.Graph sections of the html layout.
+      - The slider values for both maps are never empty.
     """
-    # Making a copy of the original dataframe
+    # Making a copy of the original dataframe.
     df_copy = df2.copy()
 
     # Extracting only the observations corresponding to each year
     df_co2 = df_copy[df_copy['year'] == co2_year]
     df_gdp = df_copy[df_copy['year'] == gdp_year]
 
-    # Creating the CO2 emission choropleth map (with plotly express)
+    # Creating the co2 emission choropleth map (with plotly express).
     fig_co2 = px.choropleth(
         data_frame=df_co2,
         scope='world',
@@ -118,7 +68,7 @@ def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
         height=600
     )
 
-    # Optional stylistic changes for CO2 map
+    # Optional stylistic changes for co2 map.
     fig_co2.update_layout(
         geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='#2E3440', subunitcolor='rgba(0,0,0,0)',
                  showframe=False),
@@ -128,7 +78,7 @@ def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
         font_family="Helvetica",
     )
 
-    # Creating the GDP choropleth map
+    # Creating the gdp choropleth map.
     fig_gdp = px.choropleth(
         data_frame=df_gdp,
         scope='world',
@@ -142,7 +92,7 @@ def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
         height=600
     )
 
-    # Optional stylistic changes for GDP map
+    # Optional stylistic changes for gdp map.
     fig_gdp.update_layout(
         geo=dict(bgcolor='rgba(0,0,0,0)', lakecolor='#2E3440', subunitcolor='rgba(0,0,0,0)',
                  showframe=False),
@@ -152,9 +102,92 @@ def change_graph_year(co2_year: int, gdp_year: int) -> Tuple[Figure, Figure]:
         font_family="Helvetica",
     )
 
-    # Return fig objects, to be passed into both dcc.Graph components
+    # Return fig objects, to be passed into both dcc.Graph components.
     return fig_co2, fig_gdp
 
 
 if __name__ == '__main__':
+    import python_ta
+
+    # Reading in the csv file using pandas.
+    df = pd.read_csv('owid-co2-data.csv')
+
+    # Importing and tidying/preprocessing our climate data.
+    df2 = df[df['iso_code'].notnull()]
+    df2 = df2[df2['iso_code'] != "OWID_WRL"]
+    df2 = df2[['country', 'year', 'co2', 'gdp']]
+
+    # Establishing the years to be visualized in both maps.
+    years_co2 = {year: str(year) for year in range(1990, 2019)}
+    years_gdp = {year: str(year) for year in range(1990, 2016)}
+
+    # Setting up the web app layout
+    map_app.layout = html.Div(id='main', style={'font-family': 'Helvetica',
+                                                'backgroundColor': '#2E3440',
+                                                'padding-top': '25px',
+                                                'padding-bottom': '25px',
+                                                'padding-left': '75px',
+                                                'padding-right': '75px'}, children=[
+
+        # Page Title
+        html.H1(children="CSC110 Final Project: Climate Change Dashboard",
+                style={'text-align': 'center', 'font-family': 'Helvetica', 'color': '#FFFFFF'}),
+
+        # Adding a space between title and subsequent heading.
+        html.Br(),
+
+        # Sub-heading
+        html.H2(children='CO2 Emissions across the World (by year)',
+                style={'font-family': 'Helvetica', 'color': '#FFFFFF'}),
+
+        # Creating a Graph Dash Core Component to hold CO2 map in this section in the main div.
+        dcc.Graph(id='co2_emission_map'),
+
+        # Creating a Graph Dash Core Component to allow user to change years on map.
+        dcc.Slider(id='choose_yr_co2',
+                   min=1990,
+                   max=2018,
+                   marks=years_co2,
+                   value=1990,
+                   included=False,
+                   updatemode='drag'
+                   ),
+
+        # Adding a space between slider and next graph
+        html.Br(),
+
+        # Sub-heading.
+        html.H2(children='GDP in US$ (by year)',
+                style={'font': 'Helvetica', 'color': '#FFFFFF'}),
+
+        # Creating another Graph core component to hold the gdp map.
+        dcc.Graph(id='gdp_map'),
+
+        # Creating another slider exclusive to the gdp map.
+        dcc.Slider(id='choose_yr_gdp',
+                   min=1990,
+                   max=2016,
+                   marks=years_gdp,
+                   value=1990,
+                   included=False,
+                   updatemode='drag'
+                   ),
+    ])
+
+    # Running the server after setting it up.
     map_app.run_server(debug=False)
+
+    # Using python_ta to verify correctness and stylistic effectiveness.
+    python_ta.check_all(config={
+        'extra-imports': ['pandas', 'plotly.express', 'plotly.graph_objects',
+                          'dash', 'dash_core_components', 'dash_html_components',
+                          'dash_dependencies', 'typing'],
+        'allowed-io': [],
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })
+
+    # Checking the contracts on the functions in the module.
+    import python_ta.contracts
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
