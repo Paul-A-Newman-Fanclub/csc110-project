@@ -1,5 +1,5 @@
 """
-CSC110 Final Project
+CSC110 Final Project: CO2 and GDP Heatmap Visualizations
 """
 import pandas as pd
 import plotly.express as px
